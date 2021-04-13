@@ -283,6 +283,11 @@ pub fn generate_vanity_wallet(num_threads: u32, prefix: String) -> Result<String
     return Ok(wallet);
 }
 
+pub fn restore_from_seed(count: u32, hex_seed: String) -> String {
+    let seed = hex::decode(hex_seed).unwrap();
+    return gen_addresses_with_seed_as_json(count, |child| (seed.clone(), child));
+}
+
 /// Generate a series of `count` addresses and private keys. 
 pub fn generate_wallet(nohd: bool, count: u32, user_entropy: &[u8]) -> String {        
     // Get 32 bytes of system entropy

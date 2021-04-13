@@ -54,7 +54,12 @@ fn main() {
                         Ok(_)   => return Ok(()),
                         Err(_)  => return Err(format!("Number of addresses '{}' is not a number", i))
                 }))
-       .get_matches();  
+       .arg(Arg::with_name("hex_seed")
+                .short("s")
+                .long("from-hex-seed")
+                .help("Restore a wallet from a hex seed")
+                .takes_value(true))
+       .get_matches();
     
     let nohd: bool    = matches.is_present("nohd");
 
@@ -100,6 +105,14 @@ fn main() {
         };
 
         // return
+        addresses
+    } else if !matches.value_of("hex_seed").is_none() {
+        print!("Generating {} Sapling addresses from hex seed...", z_addresses);
+        io::stdout().flush().ok();
+
+        let addresses = restore_from_seed(z_addresses, matches.value_of("hex_seed").unwrap().to_string());
+        println!("[OK]");
+
         addresses
     } else {
         // Get user entropy.
